@@ -1,3 +1,4 @@
+# import necessary libraries
 import numpy as np
 import librosa
 from tensorflow.keras.models import Sequential
@@ -6,12 +7,13 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 
+# suppress TensorFlow warning messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-# Define mapping of indices to emotion labels for speech emotion recognition
-emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
+# define mapping of indices to emotion labels for speech emotion recognition
+emotion_dict = {0: "angry", 1: "disgusted", 2: "fearful", 3: "happy", 4: "neutral", 5: "sad", 6: "surprised"}
 
-# Define function to extract features from audio data for speech emotion recognition
+# define function to extract features from audio data for speech emotion recognition
 def extract_features(data, sample_rate):
     zcr = np.mean(librosa.feature.zero_crossing_rate(y=data).T, axis=0)
     stft = np.abs(librosa.stft(data))
@@ -21,7 +23,7 @@ def extract_features(data, sample_rate):
     mel = np.mean(librosa.feature.melspectrogram(y=data, sr=sample_rate).T, axis=0)
     return np.concatenate((zcr, chroma_stft, mfcc, rms, mel))
 
-# Define function to predict emotion from features for speech emotion recognition
+# define function to predict emotion from features for speech emotion recognition
 def predict_emotion(features):
     scaled_features = scaler.transform(features.reshape(1, -1))
     reshaped_features = np.expand_dims(scaled_features, axis=2)
@@ -30,11 +32,11 @@ def predict_emotion(features):
     emotion_label = emotion_labels[emotion_index]
     return emotion_label
 
-# Define parameters for audio recording
+# define parameters for audio recording
 SECONDS = 0.1
 THRESHOLD = 0.0001
 
-# Define data generators for facial emotion recognition
+# define data generators for facial emotion recognition
 train_dir = 'train'
 val_dir = 'test'
 
@@ -60,7 +62,7 @@ validation_generator = val_datagen.flow_from_directory(
         color_mode="grayscale",
         class_mode='categorical')
 
-# Create the facial emotion recognition model
+# create the facial emotion recognition model
 model = Sequential()
 
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(48, 48, 1)))
@@ -77,7 +79,7 @@ model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(7, activation='softmax'))
 
-# Training the model
+# train the model
 model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
 model_info = model.fit(
         train_generator,
