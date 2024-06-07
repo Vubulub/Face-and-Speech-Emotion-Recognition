@@ -1,0 +1,7 @@
+PyAudio==0.2.14
+numpy==1.24.3
+librosa==0.10.2.post1
+opencv-python==4.10.0.82
+keras==2.13.1
+tensorflow==2.13.0
+scikit-learn==1.5.0
